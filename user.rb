@@ -1,6 +1,7 @@
 require_relative 'questions_database.rb'
 
-class User < QuestionsDatabase
+class User
+    attr_accessor :id, :first_name, :last_name
 
     def self.all
         data = QuestionsDatabase.instance.execute("SELECT * FROM users")
@@ -12,17 +13,19 @@ class User < QuestionsDatabase
     end
 
     def self.find_by_name(fname, lname)
-        User.new(QuestionsDatabase.instance.execute(<<-SQL, fname, lname) 
-                                                    SELECT *
-                                                     FROM users 
-                                                     WHERE fname = #{fname}
-                                                     AND lname = #{lname}
-                                                     SQL)
+        user = QuestionsDatabase.instance.execute(<<-SQL, self.fname, self.lname) 
+            SELECT *
+            FROM users 
+            WHERE fname = ?
+            AND lname = ?
+        SQL
+        raise "User #{fname} #{lname} not in database"
+        User.new(user)
     end
 
-    def initialize(new_question)
-        @id = new_question['id']
-        @first_name = new_question['fname']
-        @last_name = new_question['lname']
+    def initialize(new_user)
+        @id = new_user['id']
+        @first_name = new_user['fname']
+        @last_name = new_user['lname']
     end
 end
