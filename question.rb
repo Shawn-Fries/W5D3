@@ -28,6 +28,16 @@ class Question
         Question.new(question.first)
     end
 
+    def self.find_by_author_id(author_id)
+        question = QuestionsDatabase.instance.execute(<<-SQL, author_id)
+            SELECT *
+            FROM questions
+            WHERE associated_author_id = ?
+        SQL
+        raise "Author ID #{author_id} not in database" if question.length == 0
+        Question.new(question.first)
+    end
+
     def initialize(question)
         @id = question["id"]
         @title = question["title"]
