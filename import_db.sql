@@ -1,4 +1,9 @@
 PRAGMA foreign_keys = ON;
+DROP TABLE IF EXISTS question_likes;
+DROP TABLE IF EXISTS replies;
+DROP TABLE IF EXISTS question_follows;
+DROP TABLE IF EXISTS questions;
+DROP TABLE IF EXISTS users;
 
 CREATE TABLE users (
     id INTEGER PRIMARY KEY,
@@ -54,22 +59,22 @@ VALUES
 INSERT INTO
     questions (title, body, associated_author_id)
 VALUES
-    ("How do I create a SQL database?",
-    "See Title", 
-    SELECT
+    ('How do I create a SQL database?',
+    'See Title', 
+    (SELECT
         id
     FROM
         users
     WHERE
-        id = associated_author_id
+        fname = 'Shawn' AND lname = 'Fries')
     ),
     ('How do I get a job?',
     'See Title',
-    SELECT
+    (SELECT
         id
     FROM
         users
     WHERE
-        id = associated_author_id
+        fname = 'Ethan' AND lname = 'Gumin')
     );
 
