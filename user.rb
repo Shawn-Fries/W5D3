@@ -9,18 +9,24 @@ class User
     end
 
     def self.find_by_id(id)
-        User.new(QuestionsDatabase.instance.execute("SELECT * FROM users WHERE id = #{id}"))
+        user = QuestionsDatabase.instance.execute(<<-SQL, id) 
+            SELECT *
+            FROM users 
+            WHERE id = ?
+        SQL
+        raise "User ID #{id} not in database" if user.length == 0
+        User.new(user.first)
     end
 
     def self.find_by_name(fname, lname)
-        user = QuestionsDatabase.instance.execute(<<-SQL, self.fname, self.lname) 
+        user = QuestionsDatabase.instance.execute(<<-SQL, fname, lname) 
             SELECT *
             FROM users 
             WHERE fname = ?
             AND lname = ?
         SQL
-        raise "User #{fname} #{lname} not in database"
-        User.new(user)
+        raise "User #{fname} #{lname} not in database" if user.length == 0
+        User.new(user.first)
     end
 
     def initialize(new_user)
